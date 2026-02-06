@@ -1,0 +1,12 @@
+<button id="copyBtn">Copy WhatsApp Snippet</button>
+<script>
+  const snippet = `...`; // injected string
+  document.getElementById("copyBtn")?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(snippet);
+      alert("Copied!");
+    } catch {
+      alert("Could not copy. Please copy manually.");
+    }
+  });
+</script>
