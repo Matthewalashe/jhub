@@ -1,181 +1,447 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-
-const JOBS = [
-  { slug:"frontend-developer-example-company", title:"Frontend Developer", company:"Example Company", location:"Lagos", workMode:"Hybrid", level:"Entry", deadline:"Feb 28, 2026", applyEmail:"jobs@example.com" },
-  { slug:"product-designer-startup-ng", title:"Product Designer", company:"Startup NG", location:"Remote (Nigeria)", workMode:"Remote", level:"Mid", deadline:"Mar 5, 2026", applyEmail:"talent@startup.ng" },
-  { slug:"data-analyst-fintech-lagos", title:"Data Analyst", company:"Fintech Lagos", location:"Lagos", workMode:"On-site", level:"Entry", deadline:"Mar 1, 2026", applyEmail:"hr@fintechlagos.com" }
-];
+import { jobs } from "../../data/jobs";
 ---
 
 <BaseLayout title="Apply Kit — Jhub">
-  <section style="display:flex; flex-direction:column; gap:10px;">
-    <div class="chip">
-      <span class="dot" style="background:var(--teal);"></span>
-      Apply Kit
-    </div>
-
-    <h1 style="margin:0; font-size:28px; line-height:1.15; letter-spacing:-0.02em;">
-      Resume + Cover Letter
-    </h1>
-
-    <div class="muted" style="max-width:80ch; line-height:1.6;">
-      Save your details once → pick a job → generate cover letter → export PDF or open email prefilled.
-    </div>
-
-    <div class="row" style="gap:10px; margin-top:6px;">
-      <a class="btn btn-gold" href="/tools">← Tools</a>
-      <a class="btn btn-teal" href="/jobs">Browse jobs</a>
-    </div>
-  </section>
-
-  <section class="apply-grid" style="margin-top:16px; display:grid; grid-template-columns: 1.1fr .9fr; gap:12px;">
-    <!-- LEFT -->
-    <div class="card" style="padding:16px;">
-      <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
-        <div style="font-weight:900;">My Profile</div>
-        <div class="row" style="gap:8px;">
-          <button id="saveProfileBtn" class="btn btn-teal" type="button">Save</button>
-          <button id="resetProfileBtn" class="btn" type="button">Reset</button>
-        </div>
+  <section class="wrap">
+    <header class="head">
+      <div>
+        <h1 class="h1">Apply Kit</h1>
+        <p class="sub">Fill once. Generate resume, cover letter and email draft in minutes.</p>
       </div>
+      <a class="pill" href="/tools">← Tools</a>
+    </header>
 
-      <div class="muted" style="margin-top:8px; font-size:13px; line-height:1.6;">
-        Stored in this browser for now (Vanilla JS). Later: login + cloud save.
-      </div>
+    <div class="grid">
+      <!-- Left: Form -->
+      <div class="panel">
+        <h2 class="h2">1) Pick a job</h2>
 
-      <div style="margin-top:12px; display:grid; gap:10px;">
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Full name</label>
-          <input id="fullName" placeholder="e.g., Matthew Alashe" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Email</label>
-          <input id="email" placeholder="e.g., you@email.com" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Phone</label>
-          <input id="phone" placeholder="e.g., +234..." style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Role / Title</label>
-          <input id="headline" placeholder="e.g., Product Designer / Data Analyst" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Portfolio / LinkedIn link</label>
-          <input id="portfolio" placeholder="https://..." style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Top skills (comma separated)</label>
-          <input id="skills" placeholder="e.g., Figma, UX, React" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Short summary</label>
-          <textarea id="summary" rows="4" placeholder="Brief professional summary…" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical;"></textarea>
-        </div>
-
-        <div id="resume"></div>
-
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Experience bullets (one per line)</label>
-          <textarea id="experience" rows="5" placeholder="- Built …&#10;- Led …" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical;"></textarea>
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Education (one per line)</label>
-          <textarea id="education" rows="3" placeholder="BSc … — University … (Year)" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical;"></textarea>
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label style="font-weight:800;">Certifications (one per line)</label>
-          <textarea id="certs" rows="3" placeholder="Meta Social Media Marketing (Year)" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical;"></textarea>
-        </div>
-      </div>
-
-      <div id="profileHint" class="muted" style="margin-top:12px; font-size:12px;">
-        Tip: Save once, reuse across jobs.
-      </div>
-    </div>
-
-    <!-- RIGHT -->
-    <div style="display:grid; gap:12px;">
-      <div class="card" style="padding:16px;">
-        <div style="font-weight:900;">Job</div>
-        <div class="muted" style="margin-top:8px; font-size:13px;">
-          Select the job you’re applying for (or open from a job page).
-        </div>
-
-        <div style="margin-top:12px; display:grid; gap:8px;">
-          <label style="font-weight:800;">Select job</label>
-          <select id="jobSelect" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;">
-            <option value="">— Select —</option>
-            {JOBS.map((j) => (
-              <option value={j.slug}>{j.title} • {j.company}</option>
+        <label class="field">
+          <span class="label">Job</span>
+          <select id="jobSelect" class="select">
+            <option value="">Select a job…</option>
+            {jobs.map((j) => (
+              <option value={j.slug}>{j.title} — {j.company}</option>
             ))}
           </select>
+        </label>
+
+        <div id="jobMeta" class="jobMeta" aria-live="polite"></div>
+
+        <hr class="hr" />
+
+        <h2 class="h2">2) Your details</h2>
+
+        <div class="cols">
+          <label class="field">
+            <span class="label">Full name</span>
+            <input id="fullName" class="input" placeholder="e.g. Matthew Alashe" />
+          </label>
+
+          <label class="field">
+            <span class="label">Email</span>
+            <input id="email" class="input" placeholder="you@email.com" />
+          </label>
+
+          <label class="field">
+            <span class="label">Phone</span>
+            <input id="phone" class="input" placeholder="+234..." />
+          </label>
+
+          <label class="field">
+            <span class="label">Location</span>
+            <input id="location" class="input" placeholder="Lagos, Nigeria" />
+          </label>
+
+          <label class="field">
+            <span class="label">LinkedIn (optional)</span>
+            <input id="linkedIn" class="input" placeholder="https://linkedin.com/in/..." />
+          </label>
+
+          <label class="field">
+            <span class="label">Portfolio (optional)</span>
+            <input id="portfolio" class="input" placeholder="https://..." />
+          </label>
         </div>
 
-        <div id="jobMeta" class="muted" style="margin-top:12px; font-size:13px; line-height:1.6;">
-          No job selected.
+        <label class="field">
+          <span class="label">Professional summary</span>
+          <textarea id="summary" class="textarea" rows="4" placeholder="2–4 lines summary about you."></textarea>
+        </label>
+
+        <div class="cols">
+          <label class="field">
+            <span class="label">Experience 1 — Title</span>
+            <input id="exp1Title" class="input" placeholder="Product Designer" />
+          </label>
+          <label class="field">
+            <span class="label">Experience 1 — Company</span>
+            <input id="exp1Company" class="input" placeholder="Company name" />
+          </label>
+          <label class="field">
+            <span class="label">Experience 1 — Period</span>
+            <input id="exp1Period" class="input" placeholder="2022–2025" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="label">Experience 1 — Key achievements (one per line)</span>
+          <textarea id="exp1Bullets" class="textarea" rows="4" placeholder="- Built...\n- Improved...\n- Designed..."></textarea>
+        </label>
+
+        <details class="more">
+          <summary>+ Add Experience 2 (optional)</summary>
+
+          <div class="cols">
+            <label class="field">
+              <span class="label">Experience 2 — Title</span>
+              <input id="exp2Title" class="input" />
+            </label>
+            <label class="field">
+              <span class="label">Experience 2 — Company</span>
+              <input id="exp2Company" class="input" />
+            </label>
+            <label class="field">
+              <span class="label">Experience 2 — Period</span>
+              <input id="exp2Period" class="input" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="label">Experience 2 — Key achievements (one per line)</span>
+            <textarea id="exp2Bullets" class="textarea" rows="4"></textarea>
+          </label>
+        </details>
+
+        <label class="field">
+          <span class="label">Education</span>
+          <textarea id="education" class="textarea" rows="3" placeholder="BSc..., University..., Year"></textarea>
+        </label>
+
+        <label class="field">
+          <span class="label">Skills (comma-separated)</span>
+          <input id="skills" class="input" placeholder="UI/UX, Accessibility, Figma, ..." />
+        </label>
+
+        <div class="actions">
+          <button id="save" class="btn teal" type="button">Save profile</button>
+          <button id="clear" class="btn" type="button">Clear</button>
         </div>
       </div>
 
-      <div class="card" style="padding:16px;">
-        <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
-          <div style="font-weight:900;">Resume preview</div>
-          <div class="row" style="gap:8px;">
-            <button id="buildResumeBtn" class="btn btn-teal" type="button">Build</button>
-            <button id="copyResumeBtn" class="btn" type="button">Copy</button>
-          </div>
+      <!-- Right: Output -->
+      <div class="panel">
+        <h2 class="h2">3) Generate</h2>
+
+        <div class="gen">
+          <button id="genResume" class="btn teal" type="button">Generate Resume</button>
+          <button id="genCover" class="btn pink" type="button">Generate Cover Letter</button>
+          <button id="openEmail" class="btn gold" type="button">Open Email Draft</button>
+          <button id="printPdf" class="btn" type="button">Download PDF (Print)</button>
         </div>
 
-        <textarea id="resumeText" rows="10" placeholder="Build a resume preview…" style="margin-top:12px; width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical; line-height:1.6;"></textarea>
-        <div id="resumeHint" class="muted" style="margin-top:10px; font-size:12px;">Build creates a structured resume you can edit.</div>
-      </div>
-
-      <div id="cover" class="card" style="padding:16px;">
-        <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
-          <div style="font-weight:900;">Cover letter</div>
-          <div class="row" style="gap:8px;">
-            <button id="generateCoverBtn" class="btn btn-teal" type="button">Generate</button>
-            <button id="copyCoverBtn" class="btn" type="button">Copy</button>
-          </div>
+        <div class="previewTop">
+          <strong id="docTitle">Preview</strong>
+          <span class="muted" id="docHint">Choose a job and generate.</span>
         </div>
 
-        <textarea id="coverLetter" rows="10" placeholder="Generate a cover letter…" style="margin-top:12px; width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical; line-height:1.6;"></textarea>
-
-        <div class="row" style="margin-top:12px; justify-content:space-between; gap:10px;">
-          <button id="openEmailBtn" class="btn btn-pink" type="button">Open Email</button>
-          <button id="exportPdfBtn" class="btn btn-gold" type="button">Export PDF</button>
-        </div>
-
-        <div id="coverHint" class="muted" style="margin-top:10px; font-size:12px;">
-          Export PDF opens print view → Save as PDF.
-        </div>
+        <div id="preview" class="preview" aria-live="polite"></div>
       </div>
     </div>
   </section>
 
   <style>
-    @media (max-width: 900px){ .apply-grid{ grid-template-columns: 1fr !important; } }
-    input, textarea, select{ outline:none; }
-    input:focus, textarea:focus, select:focus{
-      border-color: rgba(20,184,166,.55);
-      box-shadow: 0 0 0 3px rgba(20,184,166,.12);
-    }
+    .wrap{ max-width:1120px; margin:0 auto; padding:28px 28px 64px; }
+    .head{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; padding-bottom:14px; border-bottom:1px solid #e5e7eb; }
+    .h1{ margin:0; font-size:34px; letter-spacing:-0.02em; color:#0f172a; }
+    .sub{ margin:8px 0 0; color:#64748b; line-height:1.6; }
+    .pill{ border:1px solid #e5e7eb; padding:10px 12px; font-weight:900; color:#0f172a; text-decoration:none; background:#fff; }
+    .grid{ display:grid; grid-template-columns: 1.1fr .9fr; gap:14px; padding-top:16px; }
+    .panel{ border:1px solid #e5e7eb; padding:16px; background:#fff; }
+    .h2{ margin:0 0 10px; font-size:16px; color:#0f172a; }
+    .field{ display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+    .label{ font-size:12px; color:#64748b; font-weight:800; }
+    .input,.select,.textarea{ border:1px solid #e5e7eb; padding:12px; outline:none; background:#fff; color:#0f172a; width:100%; }
+    .input:focus,.select:focus,.textarea:focus{ border-color:#14b8a6; }
+    .cols{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; }
+    .hr{ border:none; border-top:1px solid #e5e7eb; margin:14px 0; }
+    .jobMeta{ margin-top:10px; color:#64748b; line-height:1.6; }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .btn{ border:1px solid #e5e7eb; padding:10px 12px; font-weight:900; background:#fff; color:#0f172a; cursor:pointer; }
+    .btn.teal{ border-color:#14b8a6; background:#f0fdfa; }
+    .btn.pink{ border-color:#fb7185; background:#fff1f2; }
+    .btn.gold{ border-color:#fbbf24; background:#fffbeb; }
+    .gen{ display:flex; gap:10px; flex-wrap:wrap; }
+    .previewTop{ margin-top:14px; display:flex; justify-content:space-between; gap:10px; align-items:center; padding-top:12px; border-top:1px solid #e5e7eb; }
+    .muted{ color:#64748b; font-weight:700; font-size:12px; }
+    .preview{ margin-top:10px; border:1px solid #e5e7eb; padding:14px; min-height:360px; background:#fff; }
+    .more{ margin-top:12px; }
+    .more summary{ cursor:pointer; font-weight:900; color:#0f172a; }
+    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } .cols{ grid-template-columns: 1fr; } }
+    @media (max-width: 640px){ .wrap{ padding:22px 16px 56px; } .head{ align-items:flex-start; flex-direction:column; } }
   </style>
 
-  <!-- Pass jobs to the Vite/Vanilla module -->
   <script type="module">
-    window.__JHUB_JOBS__ = ${JSON.stringify(JOBS)};
-  </script>
+    // Data shipped into the page at build time
+    const JOBS = ${JSON.stringify(jobs)};
 
-  <!-- Vite + Vanilla module (bundled by Astro/Vite) -->
-  <script type="module" src="/src/scripts/applykit.js"></script>
+    const KEY = "jhub_apply_profile_v1";
+
+    const $ = (id) => document.getElementById(id);
+
+    const jobSelect = $("jobSelect");
+    const jobMeta = $("jobMeta");
+
+    const fields = {
+      fullName: $("fullName"),
+      email: $("email"),
+      phone: $("phone"),
+      location: $("location"),
+      linkedIn: $("linkedIn"),
+      portfolio: $("portfolio"),
+      summary: $("summary"),
+      exp1Title: $("exp1Title"),
+      exp1Company: $("exp1Company"),
+      exp1Period: $("exp1Period"),
+      exp1Bullets: $("exp1Bullets"),
+      exp2Title: $("exp2Title"),
+      exp2Company: $("exp2Company"),
+      exp2Period: $("exp2Period"),
+      exp2Bullets: $("exp2Bullets"),
+      education: $("education"),
+      skills: $("skills"),
+    };
+
+    const docTitle = $("docTitle");
+    const docHint = $("docHint");
+    const preview = $("preview");
+
+    function getSelectedJob() {
+      const slug = jobSelect.value || "";
+      return JOBS.find((j) => j.slug === slug) || null;
+    }
+
+    function setJobFromQuery() {
+      const url = new URL(window.location.href);
+      const slug = url.searchParams.get("job");
+      if (slug) jobSelect.value = slug;
+    }
+
+    function renderJobMeta() {
+      const job = getSelectedJob();
+      if (!job) {
+        jobMeta.textContent = "";
+        return;
+      }
+      jobMeta.innerHTML =
+        `<strong style="color:#0f172a;">${job.title}</strong><br>` +
+        `${job.company} • ${job.location}<br>` +
+        `<span style="color:#64748b;">${job.workMode} • ${job.level} • Deadline: ${job.deadline}</span>`;
+    }
+
+    function loadProfile() {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        Object.keys(fields).forEach((k) => {
+          if (fields[k]) fields[k].value = data[k] ?? "";
+        });
+      } catch {}
+    }
+
+    function saveProfile() {
+      const data = {};
+      Object.keys(fields).forEach((k) => (data[k] = fields[k].value || ""));
+      localStorage.setItem(KEY, JSON.stringify(data));
+      alert("Saved");
+    }
+
+    function clearProfile() {
+      Object.keys(fields).forEach((k) => (fields[k].value = ""));
+      localStorage.removeItem(KEY);
+      alert("Cleared");
+    }
+
+    function bullets(text) {
+      return (text || "")
+        .split("\\n")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((s) => s.replace(/^[-•]\\s*/, ""));
+    }
+
+    function buildResume(job) {
+      const name = fields.fullName.value.trim();
+      const email = fields.email.value.trim();
+      const phone = fields.phone.value.trim();
+      const location = fields.location.value.trim();
+      const linkedIn = fields.linkedIn.value.trim();
+      const portfolio = fields.portfolio.value.trim();
+      const summary = fields.summary.value.trim();
+
+      const skills = fields.skills.value.trim();
+      const edu = fields.education.value.trim();
+
+      const exp1 = {
+        title: fields.exp1Title.value.trim(),
+        company: fields.exp1Company.value.trim(),
+        period: fields.exp1Period.value.trim(),
+        bullets: bullets(fields.exp1Bullets.value),
+      };
+
+      const exp2 = {
+        title: fields.exp2Title.value.trim(),
+        company: fields.exp2Company.value.trim(),
+        period: fields.exp2Period.value.trim(),
+        bullets: bullets(fields.exp2Bullets.value),
+      };
+
+      const lines = [];
+      lines.push(`<h2 style="margin:0;">${escapeHtml(name || "Your Name")}</h2>`);
+      lines.push(`<div style="color:#64748b;line-height:1.6;">${escapeHtml([email, phone, location].filter(Boolean).join(" • "))}</div>`);
+      if (linkedIn || portfolio) lines.push(`<div style="color:#64748b;line-height:1.6;">${escapeHtml([linkedIn, portfolio].filter(Boolean).join(" • "))}</div>`);
+
+      lines.push(`<hr style="border:none;border-top:1px solid #e5e7eb;margin:14px 0;">`);
+
+      if (summary) {
+        lines.push(`<h3 style="margin:0 0 6px;">Summary</h3>`);
+        lines.push(`<p style="margin:0;color:#334155;line-height:1.7;">${escapeHtml(summary)}</p>`);
+      }
+
+      lines.push(`<h3 style="margin:14px 0 6px;">Experience</h3>`);
+      lines.push(renderExp(exp1));
+      if (exp2.title || exp2.company || exp2.period || exp2.bullets.length) lines.push(renderExp(exp2));
+
+      if (skills) {
+        lines.push(`<h3 style="margin:14px 0 6px;">Skills</h3>`);
+        lines.push(`<p style="margin:0;color:#334155;line-height:1.7;">${escapeHtml(skills)}</p>`);
+      }
+
+      if (edu) {
+        lines.push(`<h3 style="margin:14px 0 6px;">Education</h3>`);
+        lines.push(`<p style="margin:0;color:#334155;line-height:1.7;white-space:pre-wrap;">${escapeHtml(edu)}</p>`);
+      }
+
+      if (job) {
+        lines.push(`<hr style="border:none;border-top:1px solid #e5e7eb;margin:14px 0;">`);
+        lines.push(`<div style="color:#64748b;font-size:12px;">Tailored for: ${escapeHtml(job.title)} at ${escapeHtml(job.company)}</div>`);
+      }
+
+      return lines.join("");
+    }
+
+    function renderExp(exp) {
+      const top = [exp.title, exp.company, exp.period].filter(Boolean).join(" • ");
+      const b = exp.bullets.map((x) => `<li>${escapeHtml(x)}</li>`).join("");
+      return `
+        <div style="margin-top:10px;">
+          <div style="font-weight:900;color:#0f172a;">${escapeHtml(top || "Experience")}</div>
+          ${b ? `<ul style="margin:6px 0 0 18px;color:#334155;line-height:1.7;">${b}</ul>` : ""}
+        </div>
+      `;
+    }
+
+    function buildCoverLetter(job) {
+      const name = fields.fullName.value.trim() || "Your Name";
+      const email = fields.email.value.trim();
+      const phone = fields.phone.value.trim();
+      const location = fields.location.value.trim();
+
+      const company = job?.company || "Hiring Team";
+      const role = job?.title || "the role";
+
+      const summary = fields.summary.value.trim();
+
+      const body =
+`Dear ${company} team,
+
+I am writing to apply for the ${role}. I am confident my background and experience align with what you need.
+
+${summary ? summary : "I have delivered measurable outcomes across products by improving usability, speed, and clarity."}
+
+I would welcome the opportunity to discuss how I can contribute. Thank you for your time and consideration.
+
+Sincerely,
+${name}
+${[email, phone, location].filter(Boolean).join(" • ")}`;
+
+      return `<pre style="margin:0;white-space:pre-wrap;line-height:1.7;color:#0f172a;">${escapeHtml(body)}</pre>`;
+    }
+
+    function buildEmail(job) {
+      const name = fields.fullName.value.trim() || "Your Name";
+      const email = fields.email.value.trim() || "";
+      const role = job?.title || "Job Application";
+      const company = job?.company || "";
+      const to = job?.applyEmail || "";
+
+      const subject = `Application: ${role}${company ? " — " + company : ""}`;
+      const body =
+`Hello,
+
+Please find my application for the ${role}${company ? " at " + company : ""}.
+
+Regards,
+${name}
+${email}`;
+
+      return { to, subject, body };
+    }
+
+    function escapeHtml(s) {
+      return (s || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    // Wiring
+    setJobFromQuery();
+    renderJobMeta();
+    loadProfile();
+
+    jobSelect.addEventListener("change", () => {
+      renderJobMeta();
+      docHint.textContent = "Choose a generator button.";
+    });
+
+    $("save").addEventListener("click", saveProfile);
+    $("clear").addEventListener("click", clearProfile);
+
+    $("genResume").addEventListener("click", () => {
+      const job = getSelectedJob();
+      docTitle.textContent = "Resume";
+      docHint.textContent = job ? `Tailored for ${job.title}` : "No job selected";
+      preview.innerHTML = buildResume(job);
+    });
+
+    $("genCover").addEventListener("click", () => {
+      const job = getSelectedJob();
+      if (!job) { alert("Select a job first"); return; }
+      docTitle.textContent = "Cover Letter";
+      docHint.textContent = `For ${job.title}`;
+      preview.innerHTML = buildCoverLetter(job);
+    });
+
+    $("openEmail").addEventListener("click", () => {
+      const job = getSelectedJob();
+      if (!job) { alert("Select a job first"); return; }
+      const { to, subject, body } = buildEmail(job);
+      const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailto;
+    });
+
+    $("printPdf").addEventListener("click", () => {
+      if (!preview.innerHTML.trim()) {
+        alert("Generate a document first.");
+        return;
+      }
+      window.print();
+    });
+  </script>
 </BaseLayout>
