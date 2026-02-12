@@ -1,9 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
----
-import BaseLayout from "../../layouts/BaseLayout.astro";
-
 const jobs = [
   {
     slug: "frontend-developer-example-company",
@@ -14,9 +11,7 @@ const jobs = [
     workMode: "Hybrid",
     deadline: "Feb 28, 2026",
     applyEmail: "jobs@example.com",
-    summary: "Build and maintain responsive UI systems.",
-    responsibilities: ["Build UI components", "Collaborate with team", "Improve UX/accessibility"],
-    requirements: ["HTML/CSS/JS", "React is a plus", "Portfolio/GitHub"]
+    summary: "Build and maintain responsive UI systems."
   },
   {
     slug: "product-designer-startup-ng",
@@ -27,22 +22,7 @@ const jobs = [
     workMode: "Remote",
     deadline: "Mar 5, 2026",
     applyEmail: "talent@startup.ng",
-    summary: "Design UX flows and interfaces.",
-    responsibilities: ["Design flows", "Prototype", "Support dev handoff"],
-    requirements: ["Strong UX", "Figma", "Clear communication"]
-  },
-  {
-    slug: "data-analyst-fintech-lagos",
-    title: "Data Analyst",
-    company: "Fintech Lagos",
-    location: "Lagos",
-    level: "Entry",
-    workMode: "On-site",
-    deadline: "Mar 1, 2026",
-    applyEmail: "hr@fintechlagos.com",
-    summary: "Analyze datasets and generate reports.",
-    responsibilities: ["Clean/analyze data", "Create reports", "Track metrics"],
-    requirements: ["Excel/Sheets", "SQL basics", "Attention to detail"]
+    summary: "Design UX flows and interfaces."
   }
 ];
 
@@ -55,6 +35,7 @@ export function getStaticPaths() {
 
 const { job } = Astro.props;
 ---
+
 
 const canonical = `https://jhub.ng/jobs/${job.slug}`;
 const whatsappSnippet =
