@@ -4,7 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-const JOBS = [
+const jobs = [
   {
     slug: "frontend-developer-example-company",
     title: "Frontend Developer",
@@ -14,17 +14,9 @@ const JOBS = [
     workMode: "Hybrid",
     deadline: "Feb 28, 2026",
     applyEmail: "jobs@example.com",
-    summary: "Build and maintain responsive UI for a fast-growing product team.",
-    responsibilities: [
-      "Build UI screens and reusable components",
-      "Collaborate with design and backend engineers",
-      "Improve performance and accessibility"
-    ],
-    requirements: [
-      "Good knowledge of HTML/CSS/JS",
-      "React experience is a plus",
-      "Portfolio or GitHub links"
-    ]
+    summary: "Build and maintain responsive UI systems.",
+    responsibilities: ["Build UI components", "Collaborate with team", "Improve UX/accessibility"],
+    requirements: ["HTML/CSS/JS", "React is a plus", "Portfolio/GitHub"]
   },
   {
     slug: "product-designer-startup-ng",
@@ -35,17 +27,9 @@ const JOBS = [
     workMode: "Remote",
     deadline: "Mar 5, 2026",
     applyEmail: "talent@startup.ng",
-    summary: "Design end-to-end flows and improve UX across mobile and web.",
-    responsibilities: [
-      "Design user flows and UI screens",
-      "Create prototypes and run quick usability checks",
-      "Work closely with engineering to ship"
-    ],
-    requirements: [
-      "Strong UX foundations",
-      "Figma proficiency",
-      "Ability to explain design decisions"
-    ]
+    summary: "Design UX flows and interfaces.",
+    responsibilities: ["Design flows", "Prototype", "Support dev handoff"],
+    requirements: ["Strong UX", "Figma", "Clear communication"]
   },
   {
     slug: "data-analyst-fintech-lagos",
@@ -56,28 +40,21 @@ const JOBS = [
     workMode: "On-site",
     deadline: "Mar 1, 2026",
     applyEmail: "hr@fintechlagos.com",
-    summary: "Analyze datasets and generate insights and reports.",
-    responsibilities: [
-      "Build dashboards and reports",
-      "Work with stakeholders to define metrics",
-      "Clean and analyze datasets"
-    ],
-    requirements: [
-      "Excel/Sheets strong",
-      "SQL basics",
-      "Clear communication"
-    ]
+    summary: "Analyze datasets and generate reports.",
+    responsibilities: ["Clean/analyze data", "Create reports", "Track metrics"],
+    requirements: ["Excel/Sheets", "SQL basics", "Attention to detail"]
   }
 ];
 
-export async function getStaticPaths() {
-  return JOBS.map((job) => ({
+export function getStaticPaths() {
+  return jobs.map((job) => ({
     params: { slug: job.slug },
     props: { job }
   }));
 }
 
 const { job } = Astro.props;
+---
 
 const canonical = `https://jhub.ng/jobs/${job.slug}`;
 const whatsappSnippet =
