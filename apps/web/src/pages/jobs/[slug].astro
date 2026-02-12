@@ -1,48 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { jobs } from "../../data/jobs";
 
-/* ===============================
-   Job data (temporary in-file DB)
-================================ */
-const jobs = [
-  {
-    slug: "frontend-developer-example-company",
-    title: "Frontend Developer",
-    company: "Example Company",
-    location: "Lagos",
-    level: "Entry",
-    workMode: "Hybrid",
-    deadline: "Feb 28, 2026",
-    applyEmail: "jobs@example.com",
-    summary: "Build and maintain responsive UI systems."
-  },
-  {
-    slug: "product-designer-startup-ng",
-    title: "Product Designer",
-    company: "Startup NG",
-    location: "Remote (Nigeria)",
-    level: "Mid",
-    workMode: "Remote",
-    deadline: "Mar 5, 2026",
-    applyEmail: "talent@startup.ng",
-    summary: "Design UX flows and interfaces."
-  },
-  {
-    slug: "data-analyst-fintech-lagos",
-    title: "Data Analyst",
-    company: "Fintech Lagos",
-    location: "Lagos",
-    level: "Entry",
-    workMode: "On-site",
-    deadline: "Mar 1, 2026",
-    applyEmail: "hr@fintechlagos.com",
-    summary: "Analyze datasets and generate reports."
-  }
-];
-
-/* ===============================
-   Astro static generation
-================================ */
 export function getStaticPaths() {
   return jobs.map((job) => ({
     params: { slug: job.slug },
@@ -52,11 +11,7 @@ export function getStaticPaths() {
 
 const { job } = Astro.props;
 
-/* ===============================
-   WhatsApp + canonical helpers
-================================ */
 const canonical = `https://jhub.ng/jobs/${job.slug}`;
-
 const whatsappSnippet = `${job.title} at ${job.company}
 
 📍 ${job.location} • ${job.workMode} • ${job.level}
@@ -71,57 +26,52 @@ ${canonical}
 ---
 
 <BaseLayout title={`${job.title} — Jhub`}>
+  <a href="/jobs" style="font-weight:800;color:#14b8a6;">← Back to jobs</a>
 
-<a href="/jobs" style="font-weight:800;color:#14b8a6;">← Back to jobs</a>
+  <section style="margin-top:16px;border:1px solid #e2e8f0;padding:16px;">
+    <h1 style="margin:0;font-size:28px;">{job.title}</h1>
 
-<section style="margin-top:16px;border:1px solid #e2e8f0;padding:16px;">
+    <div style="margin-top:6px;color:#64748b;">
+      {job.company} • {job.location}
+    </div>
 
-  <h1 style="margin:0;font-size:28px;">{job.title}</h1>
+    <p style="margin-top:12px;color:#64748b;line-height:1.6;">
+      {job.summary}
+    </p>
 
-  <div style="margin-top:6px;color:#64748b;">
-    {job.company} • {job.location}
-  </div>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+      <span style="border:1px solid #e2e8f0;padding:6px 10px;">{job.workMode}</span>
+      <span style="border:1px solid #e2e8f0;padding:6px 10px;">{job.level}</span>
+      <span style="border:1px solid #e2e8f0;padding:6px 10px;">Deadline: {job.deadline}</span>
+    </div>
 
-  <p style="margin-top:12px;color:#64748b;line-height:1.6;">
-    {job.summary}
-  </p>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+      <a
+        href={`mailto:${job.applyEmail}?subject=${encodeURIComponent(`Application: ${job.title}`)}`}
+        style="border:1px solid #14b8a6;padding:10px 14px;font-weight:800;"
+      >
+        Open email
+      </a>
 
-  <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-    <span style="border:1px solid #e2e8f0;padding:6px 10px;">{job.workMode}</span>
-    <span style="border:1px solid #e2e8f0;padding:6px 10px;">{job.level}</span>
-    <span style="border:1px solid #e2e8f0;padding:6px 10px;">Deadline: {job.deadline}</span>
-  </div>
+      <a
+        href={`/tools/apply?job=${job.slug}`}
+        style="border:1px solid #fb7185;padding:10px 14px;font-weight:800;"
+      >
+        Apply tools
+      </a>
 
-  <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
-    <a
-      href={`mailto:${job.applyEmail}?subject=${encodeURIComponent(`Application: ${job.title}`)}`}
-      style="border:1px solid #14b8a6;padding:10px 14px;font-weight:800;"
-    >
-      Open email
-    </a>
+      <button id="copyBtn" style="border:1px solid #fbbf24;padding:10px 14px;font-weight:800;">
+        Copy WhatsApp
+      </button>
+    </div>
+  </section>
 
-    <a
-      href={`/tools/apply?job=${job.slug}`}
-      style="border:1px solid #fb7185;padding:10px 14px;font-weight:800;"
-    >
-      Apply tools
-    </a>
-
-    <button id="copyBtn" style="border:1px solid #fbbf24;padding:10px 14px;font-weight:800;">
-      Copy WhatsApp
-    </button>
-  </div>
-
-</section>
-
-<script type="module">
-const snippet = ${JSON.stringify(whatsappSnippet)};
-const btn = document.getElementById("copyBtn");
-
-btn?.addEventListener("click", async () => {
-  await navigator.clipboard.writeText(snippet);
-  alert("WhatsApp text copied");
-});
-</script>
-
+  <script type="module">
+    const snippet = ${JSON.stringify(whatsappSnippet)};
+    const btn = document.getElementById("copyBtn");
+    btn?.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(snippet);
+      alert("WhatsApp text copied");
+    });
+  </script>
 </BaseLayout>
