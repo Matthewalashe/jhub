@@ -1,6 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
+/* ===============================
+   Job data (temporary in-file DB)
+================================ */
 const jobs = [
   {
     slug: "frontend-developer-example-company",
@@ -23,23 +26,38 @@ const jobs = [
     deadline: "Mar 5, 2026",
     applyEmail: "talent@startup.ng",
     summary: "Design UX flows and interfaces."
+  },
+  {
+    slug: "data-analyst-fintech-lagos",
+    title: "Data Analyst",
+    company: "Fintech Lagos",
+    location: "Lagos",
+    level: "Entry",
+    workMode: "On-site",
+    deadline: "Mar 1, 2026",
+    applyEmail: "hr@fintechlagos.com",
+    summary: "Analyze datasets and generate reports."
   }
 ];
 
+/* ===============================
+   Astro static generation
+================================ */
 export function getStaticPaths() {
   return jobs.map((job) => ({
     params: { slug: job.slug },
-    props: { job }
+    props: { job },
   }));
 }
 
 const { job } = Astro.props;
----
 
-
+/* ===============================
+   WhatsApp + canonical helpers
+================================ */
 const canonical = `https://jhub.ng/jobs/${job.slug}`;
-const whatsappSnippet =
-`${job.title} at ${job.company}
+
+const whatsappSnippet = `${job.title} at ${job.company}
 
 📍 ${job.location} • ${job.workMode} • ${job.level}
 ⏳ Deadline: ${job.deadline}
@@ -53,80 +71,57 @@ ${canonical}
 ---
 
 <BaseLayout title={`${job.title} — Jhub`}>
-  <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
-    <a href="/jobs" style="font-weight:900; color:var(--teal);">← Back to jobs</a>
 
-    <div class="row" style="gap:8px;">
-      <span class="chip"><span class="dot" style="background:var(--gold);"></span>{job.workMode}</span>
-      <span class="chip"><span class="dot" style="background:var(--pink);"></span>{job.level}</span>
-      <span class="chip"><span class="dot" style="background:var(--teal);"></span>Deadline: {job.deadline}</span>
-    </div>
+<a href="/jobs" style="font-weight:800;color:#14b8a6;">← Back to jobs</a>
+
+<section style="margin-top:16px;border:1px solid #e2e8f0;padding:16px;">
+
+  <h1 style="margin:0;font-size:28px;">{job.title}</h1>
+
+  <div style="margin-top:6px;color:#64748b;">
+    {job.company} • {job.location}
   </div>
 
-  <section class="card" style="margin-top:14px; padding:16px;">
-    <h1 style="margin:0; font-size:28px; line-height:1.15; letter-spacing:-0.02em;">
-      {job.title}
-    </h1>
+  <p style="margin-top:12px;color:#64748b;line-height:1.6;">
+    {job.summary}
+  </p>
 
-    <div class="muted" style="margin-top:8px; font-size:14px;">
-      <strong style="color:var(--ink);">{job.company}</strong> • {job.location}
-    </div>
+  <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+    <span style="border:1px solid #e2e8f0;padding:6px 10px;">{job.workMode}</span>
+    <span style="border:1px solid #e2e8f0;padding:6px 10px;">{job.level}</span>
+    <span style="border:1px solid #e2e8f0;padding:6px 10px;">Deadline: {job.deadline}</span>
+  </div>
 
-    <p class="muted" style="margin:12px 0 0; line-height:1.7; max-width: 90ch;">
-      {job.summary}
-    </p>
+  <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+    <a
+      href={`mailto:${job.applyEmail}?subject=${encodeURIComponent(`Application: ${job.title}`)}`}
+      style="border:1px solid #14b8a6;padding:10px 14px;font-weight:800;"
+    >
+      Open email
+    </a>
 
-    <div class="row" style="margin-top:14px; gap:10px;">
-      <a class="btn btn-teal"
-         href={`mailto:${job.applyEmail}?subject=${encodeURIComponent(`Application: ${job.title} — ${job.company}`)}`}>
-        Open email to apply
-      </a>
+    <a
+      href={`/tools/apply?job=${job.slug}`}
+      style="border:1px solid #fb7185;padding:10px 14px;font-weight:800;"
+    >
+      Apply tools
+    </a>
 
-      <a class="btn btn-pink" href={`/tools/apply?job=${job.slug}`}>
-        Apply tools (Resume + Cover)
-      </a>
+    <button id="copyBtn" style="border:1px solid #fbbf24;padding:10px 14px;font-weight:800;">
+      Copy WhatsApp
+    </button>
+  </div>
 
-      <button id="copyWhatsAppBtn" class="btn btn-gold" type="button">
-        Copy WhatsApp snippet
-      </button>
+</section>
 
-      <span id="copyHint" class="muted" style="font-size:12px;">
-        Copy and paste into your WhatsApp channel.
-      </span>
-    </div>
-  </section>
+<script type="module">
+const snippet = ${JSON.stringify(whatsappSnippet)};
+const btn = document.getElementById("copyBtn");
 
-  <section style="margin-top:14px; display:grid; gap:12px;">
-    <div class="card" style="padding:16px;">
-      <div style="font-weight:900; margin-bottom:8px;">Responsibilities</div>
-      <ul style="margin:0; padding-left:18px; line-height:1.8;">
-        {job.responsibilities.map((r) => <li>{r}</li>)}
-      </ul>
-    </div>
+btn?.addEventListener("click", async () => {
+  await navigator.clipboard.writeText(snippet);
+  alert("WhatsApp text copied");
+});
+</script>
 
-    <div class="card" style="padding:16px;">
-      <div style="font-weight:900; margin-bottom:8px;">Requirements</div>
-      <ul style="margin:0; padding-left:18px; line-height:1.8;">
-        {job.requirements.map((r) => <li>{r}</li>)}
-      </ul>
-    </div>
-  </section>
-
-  <script type="module">
-    const snippet = ${JSON.stringify(whatsappSnippet)};
-    const btn = document.getElementById("copyWhatsAppBtn");
-    const hint = document.getElementById("copyHint");
-
-    btn?.addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(snippet);
-        if(hint) hint.textContent = "Copied ✅ Paste into WhatsApp.";
-      }catch{
-        if(hint) hint.textContent = "Copy failed. Select & copy manually.";
-      }
-      setTimeout(() => {
-        if(hint) hint.textContent = "Copy and paste into your WhatsApp channel.";
-      }, 2500);
-    });
-  </script>
 </BaseLayout>
