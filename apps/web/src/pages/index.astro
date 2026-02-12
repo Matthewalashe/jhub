@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const featured = {
+  title: "Frontend Developer",
+  company: "Example Company",
+  location: "Lagos",
+  level: "Entry",
+  deadline: "Feb 28, 2026",
+  link: "/jobs/frontend-developer-example-company"
+};
+
+const latestJobs = [
+  {
+    title: "Product Designer",
+    company: "Startup NG",
+    location: "Remote (Nigeria)",
+    level: "Mid",
+    deadline: "Mar 5, 2026",
+    link: "/jobs/product-designer-startup-ng"
+  },
+  {
+    title: "Data Analyst",
+    company: "Fintech Lagos",
+    location: "Lagos",
+    level: "Entry",
+    deadline: "Mar 1, 2026",
+    link: "/jobs/data-analyst-fintech-lagos"
+  }
+];
+---
+
+<BaseLayout title="Jhub — Jobs in Nigeria">
+
+<section style="background:white;padding:18px;border-radius:12px;">
+  <div style="font-size:12px;opacity:.7;">Featured Job</div>
+
+  <h2>{featured.title}</h2>
+
+  <div>{featured.company} • {featured.location} • {featured.level}</div>
+
+  <div style="margin-top:6px;">Deadline: {featured.deadline}</div>
+
+  <a href={featured.link}>View details →</a>
+</section>
+
+<section style="margin-top:20px;">
+  <h3>Latest Jobs</h3>
+
+  <div style="display:grid;gap:12px;">
+    {latestJobs.map(j => (
+      <a href={j.link} style="text-decoration:none;color:inherit;">
+        <div style="background:white;padding:14px;border-radius:12px;">
+          <strong>{j.title}</strong>
+          <div>{j.company} • {j.location}</div>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+</BaseLayout>

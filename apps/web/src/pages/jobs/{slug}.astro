@@ -1,0 +1,171 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const JOBS = [
+  {
+    slug: "frontend-developer-example-company",
+    title: "Frontend Developer",
+    company: "Example Company",
+    location: "Lagos",
+    level: "Entry",
+    workMode: "Hybrid",
+    deadline: "Feb 28, 2026",
+    applyEmail: "jobs@example.com",
+    summary: "Build and maintain responsive UI for a fast-growing product team.",
+    responsibilities: [
+      "Build UI screens and reusable components",
+      "Collaborate with design and backend engineers",
+      "Improve performance and accessibility"
+    ],
+    requirements: [
+      "Good knowledge of HTML/CSS/JS",
+      "React experience is a plus",
+      "Portfolio or GitHub links"
+    ]
+  },
+  {
+    slug: "product-designer-startup-ng",
+    title: "Product Designer",
+    company: "Startup NG",
+    location: "Remote (Nigeria)",
+    level: "Mid",
+    workMode: "Remote",
+    deadline: "Mar 5, 2026",
+    applyEmail: "talent@startup.ng",
+    summary: "Design end-to-end flows and improve UX across mobile and web.",
+    responsibilities: [
+      "Design user flows and UI screens",
+      "Create prototypes and run quick usability checks",
+      "Work closely with engineering to ship"
+    ],
+    requirements: [
+      "Strong UX foundations",
+      "Figma proficiency",
+      "Ability to explain design decisions"
+    ]
+  },
+  {
+    slug: "data-analyst-fintech-lagos",
+    title: "Data Analyst",
+    company: "Fintech Lagos",
+    location: "Lagos",
+    level: "Entry",
+    workMode: "On-site",
+    deadline: "Mar 1, 2026",
+    applyEmail: "hr@fintechlagos.com",
+    summary: "Analyze datasets and generate insights and reports.",
+    responsibilities: [
+      "Build dashboards and reports",
+      "Work with stakeholders to define metrics",
+      "Clean and analyze datasets"
+    ],
+    requirements: [
+      "Excel/Sheets strong",
+      "SQL basics",
+      "Clear communication"
+    ]
+  }
+];
+
+export async function getStaticPaths() {
+  return JOBS.map((job) => ({
+    params: { slug: job.slug },
+    props: { job }
+  }));
+}
+
+const { job } = Astro.props;
+
+const canonical = `https://jhub.ng/jobs/${job.slug}`;
+const whatsappSnippet =
+`${job.title} at ${job.company}
+
+📍 ${job.location} • ${job.workMode} • ${job.level}
+⏳ Deadline: ${job.deadline}
+
+${job.summary}
+
+Apply here:
+${canonical}
+
+#JhubJobs`;
+---
+
+<BaseLayout title={`${job.title} — Jhub`}>
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+    <a href="/jobs" style="font-weight:900; color:var(--teal);">← Back to jobs</a>
+
+    <div class="row" style="gap:8px;">
+      <span class="chip"><span class="dot" style="background:var(--gold);"></span>{job.workMode}</span>
+      <span class="chip"><span class="dot" style="background:var(--pink);"></span>{job.level}</span>
+      <span class="chip"><span class="dot" style="background:var(--teal);"></span>Deadline: {job.deadline}</span>
+    </div>
+  </div>
+
+  <section class="card" style="margin-top:14px; padding:16px;">
+    <h1 style="margin:0; font-size:28px; line-height:1.15; letter-spacing:-0.02em;">
+      {job.title}
+    </h1>
+
+    <div class="muted" style="margin-top:8px; font-size:14px;">
+      <strong style="color:var(--ink);">{job.company}</strong> • {job.location}
+    </div>
+
+    <p class="muted" style="margin:12px 0 0; line-height:1.7; max-width: 90ch;">
+      {job.summary}
+    </p>
+
+    <div class="row" style="margin-top:14px; gap:10px;">
+      <a class="btn btn-teal"
+         href={`mailto:${job.applyEmail}?subject=${encodeURIComponent(`Application: ${job.title} — ${job.company}`)}`}>
+        Open email to apply
+      </a>
+
+      <a class="btn btn-pink" href={`/tools/apply?job=${job.slug}`}>
+        Apply tools (Resume + Cover)
+      </a>
+
+      <button id="copyWhatsAppBtn" class="btn btn-gold" type="button">
+        Copy WhatsApp snippet
+      </button>
+
+      <span id="copyHint" class="muted" style="font-size:12px;">
+        Copy and paste into your WhatsApp channel.
+      </span>
+    </div>
+  </section>
+
+  <section style="margin-top:14px; display:grid; gap:12px;">
+    <div class="card" style="padding:16px;">
+      <div style="font-weight:900; margin-bottom:8px;">Responsibilities</div>
+      <ul style="margin:0; padding-left:18px; line-height:1.8;">
+        {job.responsibilities.map((r) => <li>{r}</li>)}
+      </ul>
+    </div>
+
+    <div class="card" style="padding:16px;">
+      <div style="font-weight:900; margin-bottom:8px;">Requirements</div>
+      <ul style="margin:0; padding-left:18px; line-height:1.8;">
+        {job.requirements.map((r) => <li>{r}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <script type="module">
+    const snippet = ${JSON.stringify(whatsappSnippet)};
+    const btn = document.getElementById("copyWhatsAppBtn");
+    const hint = document.getElementById("copyHint");
+
+    btn?.addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(snippet);
+        if(hint) hint.textContent = "Copied ✅ Paste into WhatsApp.";
+      }catch{
+        if(hint) hint.textContent = "Copy failed. Select & copy manually.";
+      }
+      setTimeout(() => {
+        if(hint) hint.textContent = "Copy and paste into your WhatsApp channel.";
+      }, 2500);
+    });
+  </script>
+</BaseLayout>

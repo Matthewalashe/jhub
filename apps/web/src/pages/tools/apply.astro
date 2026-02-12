@@ -1,0 +1,181 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const JOBS = [
+  { slug:"frontend-developer-example-company", title:"Frontend Developer", company:"Example Company", location:"Lagos", workMode:"Hybrid", level:"Entry", deadline:"Feb 28, 2026", applyEmail:"jobs@example.com" },
+  { slug:"product-designer-startup-ng", title:"Product Designer", company:"Startup NG", location:"Remote (Nigeria)", workMode:"Remote", level:"Mid", deadline:"Mar 5, 2026", applyEmail:"talent@startup.ng" },
+  { slug:"data-analyst-fintech-lagos", title:"Data Analyst", company:"Fintech Lagos", location:"Lagos", workMode:"On-site", level:"Entry", deadline:"Mar 1, 2026", applyEmail:"hr@fintechlagos.com" }
+];
+---
+
+<BaseLayout title="Apply Kit — Jhub">
+  <section style="display:flex; flex-direction:column; gap:10px;">
+    <div class="chip">
+      <span class="dot" style="background:var(--teal);"></span>
+      Apply Kit
+    </div>
+
+    <h1 style="margin:0; font-size:28px; line-height:1.15; letter-spacing:-0.02em;">
+      Resume + Cover Letter
+    </h1>
+
+    <div class="muted" style="max-width:80ch; line-height:1.6;">
+      Save your details once → pick a job → generate cover letter → export PDF or open email prefilled.
+    </div>
+
+    <div class="row" style="gap:10px; margin-top:6px;">
+      <a class="btn btn-gold" href="/tools">← Tools</a>
+      <a class="btn btn-teal" href="/jobs">Browse jobs</a>
+    </div>
+  </section>
+
+  <section class="apply-grid" style="margin-top:16px; display:grid; grid-template-columns: 1.1fr .9fr; gap:12px;">
+    <!-- LEFT -->
+    <div class="card" style="padding:16px;">
+      <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+        <div style="font-weight:900;">My Profile</div>
+        <div class="row" style="gap:8px;">
+          <button id="saveProfileBtn" class="btn btn-teal" type="button">Save</button>
+          <button id="resetProfileBtn" class="btn" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div class="muted" style="margin-top:8px; font-size:13px; line-height:1.6;">
+        Stored in this browser for now (Vanilla JS). Later: login + cloud save.
+      </div>
+
+      <div style="margin-top:12px; display:grid; gap:10px;">
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Full name</label>
+          <input id="fullName" placeholder="e.g., Matthew Alashe" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
+        </div>
+
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Email</label>
+          <input id="email" placeholder="e.g., you@email.com" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
+        </div>
+
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Phone</label>
+          <input id="phone" placeholder="e.g., +234..." style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
+        </div>
+
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Role / Title</label>
+          <input id="headline" placeholder="e.g., Product Designer / Data Analyst" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
+        </div>
+
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Portfolio / LinkedIn link</label>
+          <input id="portfolio" placeholder="https://..." style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
+        </div>
+
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Top skills (comma separated)</label>
+          <input id="skills" placeholder="e.g., Figma, UX, React" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;" />
+        </div>
+
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Short summary</label>
+          <textarea id="summary" rows="4" placeholder="Brief professional summary…" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical;"></textarea>
+        </div>
+
+        <div id="resume"></div>
+
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Experience bullets (one per line)</label>
+          <textarea id="experience" rows="5" placeholder="- Built …&#10;- Led …" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical;"></textarea>
+        </div>
+
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Education (one per line)</label>
+          <textarea id="education" rows="3" placeholder="BSc … — University … (Year)" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical;"></textarea>
+        </div>
+
+        <div style="display:grid; gap:6px;">
+          <label style="font-weight:800;">Certifications (one per line)</label>
+          <textarea id="certs" rows="3" placeholder="Meta Social Media Marketing (Year)" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical;"></textarea>
+        </div>
+      </div>
+
+      <div id="profileHint" class="muted" style="margin-top:12px; font-size:12px;">
+        Tip: Save once, reuse across jobs.
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div style="display:grid; gap:12px;">
+      <div class="card" style="padding:16px;">
+        <div style="font-weight:900;">Job</div>
+        <div class="muted" style="margin-top:8px; font-size:13px;">
+          Select the job you’re applying for (or open from a job page).
+        </div>
+
+        <div style="margin-top:12px; display:grid; gap:8px;">
+          <label style="font-weight:800;">Select job</label>
+          <select id="jobSelect" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0;">
+            <option value="">— Select —</option>
+            {JOBS.map((j) => (
+              <option value={j.slug}>{j.title} • {j.company}</option>
+            ))}
+          </select>
+        </div>
+
+        <div id="jobMeta" class="muted" style="margin-top:12px; font-size:13px; line-height:1.6;">
+          No job selected.
+        </div>
+      </div>
+
+      <div class="card" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+          <div style="font-weight:900;">Resume preview</div>
+          <div class="row" style="gap:8px;">
+            <button id="buildResumeBtn" class="btn btn-teal" type="button">Build</button>
+            <button id="copyResumeBtn" class="btn" type="button">Copy</button>
+          </div>
+        </div>
+
+        <textarea id="resumeText" rows="10" placeholder="Build a resume preview…" style="margin-top:12px; width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical; line-height:1.6;"></textarea>
+        <div id="resumeHint" class="muted" style="margin-top:10px; font-size:12px;">Build creates a structured resume you can edit.</div>
+      </div>
+
+      <div id="cover" class="card" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+          <div style="font-weight:900;">Cover letter</div>
+          <div class="row" style="gap:8px;">
+            <button id="generateCoverBtn" class="btn btn-teal" type="button">Generate</button>
+            <button id="copyCoverBtn" class="btn" type="button">Copy</button>
+          </div>
+        </div>
+
+        <textarea id="coverLetter" rows="10" placeholder="Generate a cover letter…" style="margin-top:12px; width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:0; resize:vertical; line-height:1.6;"></textarea>
+
+        <div class="row" style="margin-top:12px; justify-content:space-between; gap:10px;">
+          <button id="openEmailBtn" class="btn btn-pink" type="button">Open Email</button>
+          <button id="exportPdfBtn" class="btn btn-gold" type="button">Export PDF</button>
+        </div>
+
+        <div id="coverHint" class="muted" style="margin-top:10px; font-size:12px;">
+          Export PDF opens print view → Save as PDF.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    @media (max-width: 900px){ .apply-grid{ grid-template-columns: 1fr !important; } }
+    input, textarea, select{ outline:none; }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(20,184,166,.55);
+      box-shadow: 0 0 0 3px rgba(20,184,166,.12);
+    }
+  </style>
+
+  <!-- Pass jobs to the Vite/Vanilla module -->
+  <script type="module">
+    window.__JHUB_JOBS__ = ${JSON.stringify(JOBS)};
+  </script>
+
+  <!-- Vite + Vanilla module (bundled by Astro/Vite) -->
+  <script type="module" src="/src/scripts/applykit.js"></script>
+</BaseLayout>
