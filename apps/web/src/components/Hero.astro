@@ -1,0 +1,371 @@
+---
+/**
+ * Hero: full width, epoxy blur background, liquid glass box,
+ * blend/blur bottom into next section, strong cursor motion + "jump" on leave.
+ */
+---
+
+<section class="hero" id="hero">
+  <div class="epoxy" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+    <span class="shine"></span>
+    <span class="grain"></span>
+  </div>
+
+  <div class="heroContainer">
+    <div class="glass" aria-label="Hero content">
+      <div class="kicker">Career + Learning OS for Nigeria</div>
+
+      <h1>
+        Your Skills.
+        <span class="teal">Global Opportunities.</span><br />
+        We Connect the Dots.<br />
+        <span class="muted">Take The Next Step.</span>
+      </h1>
+
+      <p class="lead">
+        Your personal tool for learning and working. Create your free Jhub profile and automate your
+        job application processes — top job opportunities, in one place.
+      </p>
+
+      <div class="ctaRow">
+        <a class="btn teal" href="/tools/apply">Get Started</a>
+        <a class="btn ghost" href="/jobs">Browse Jobs</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blend out bottom into next section -->
+  <div class="heroBlend" aria-hidden="true"></div>
+
+  <script is:inline>
+    (function () {
+      const hero = document.getElementById("hero");
+      if (!hero) return;
+
+      const prefersReduced =
+        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      hero.style.setProperty("--mx", "0");
+      hero.style.setProperty("--my", "0");
+      hero.style.setProperty("--ix", "0");
+      hero.style.setProperty("--iy", "0");
+
+      if (prefersReduced) return;
+
+      // Idle drift (always alive)
+      let t = 0;
+      function idleTick() {
+        t += 0.012;
+        const ix = Math.sin(t);
+        const iy = Math.cos(t * 0.9);
+        hero.style.setProperty("--ix", ix.toFixed(4));
+        hero.style.setProperty("--iy", iy.toFixed(4));
+        requestAnimationFrame(idleTick);
+      }
+      requestAnimationFrame(idleTick);
+
+      // Cursor reactive (strong + smooth)
+      let tx = 0, ty = 0;
+      let x = 0, y = 0;
+      let raf = 0;
+
+      function onMove(e) {
+        const rect = hero.getBoundingClientRect();
+        const cx = (e.clientX - rect.left) / rect.width;
+        const cy = (e.clientY - rect.top) / rect.height;
+        tx = (cx - 0.5) * 2;
+        ty = (cy - 0.5) * 2;
+        if (!raf) raf = requestAnimationFrame(tick);
+      }
+
+      function tick() {
+        raf = 0;
+        x += (tx - x) * 0.18;
+        y += (ty - y) * 0.18;
+        hero.style.setProperty("--mx", x.toFixed(4));
+        hero.style.setProperty("--my", y.toFixed(4));
+
+        if (Math.abs(tx - x) > 0.001 || Math.abs(ty - y) > 0.001) {
+          raf = requestAnimationFrame(tick);
+        }
+      }
+
+      // On leave: jump blobs to a new "location", then settle
+      let leaveTimer = 0;
+      function onLeave() {
+        clearTimeout(leaveTimer);
+
+        // jump to noticeable random offsets
+        tx = (Math.random() * 2 - 1) * 1.0;
+        ty = (Math.random() * 2 - 1) * 1.0;
+        if (!raf) raf = requestAnimationFrame(tick);
+
+        // then calmly return to center
+        leaveTimer = window.setTimeout(() => {
+          tx = 0; ty = 0;
+          if (!raf) raf = requestAnimationFrame(tick);
+        }, 520);
+      }
+
+      hero.addEventListener("pointermove", onMove, { passive: true });
+      hero.addEventListener("pointerleave", onLeave);
+    })();
+  </script>
+
+  <style>
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-bottom:1px solid var(--border);
+      background:#fff;
+      padding: clamp(64px, 8vw, 110px) 0 clamp(54px, 7vw, 90px);
+
+      --mx: 0;
+      --my: 0;
+      --ix: 0;
+      --iy: 0;
+    }
+
+    .heroContainer{
+      position:relative;
+      z-index:2;
+      max-width:1240px;
+      margin:0 auto;
+      padding:0 22px;
+      display:grid;
+      place-items:center;
+    }
+
+    /* Liquid glass box */
+    .glass{
+      width:min(980px, 100%);
+      padding: clamp(18px, 2.6vw, 30px);
+
+      border:1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+
+      box-shadow:
+        0 18px 80px rgba(2,6,23,0.10),
+        inset 0 1px 0 rgba(255,255,255,0.22);
+
+      transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+    .glass:hover{
+      border-color: rgba(255,255,255,0.42);
+      box-shadow:
+        0 22px 90px rgba(2,6,23,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.34),
+        0 0 0 1px rgba(15,118,110,0.10);
+      transform: translateY(-1px);
+    }
+
+    .kicker{
+      font-size:12px;
+      font-weight:650;
+      color: var(--teal);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      text-align:center;
+
+      /* more breathing space */
+      margin-bottom: 24px;
+    }
+
+    h1{
+      margin: 0 auto;
+      font-size: clamp(34px, 4.2vw, 54px);
+      line-height: 1.08;
+      font-weight: 720;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-align:center;
+
+      max-width: 24ch;
+
+      /* max 3 lines */
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .teal{ color: var(--teal); }
+    .muted{ color: var(--muted); font-weight:650; }
+
+    .lead{
+      margin: 32px auto 0; /* <-- 32px breathing space */
+      max-width: 74ch;
+      text-align:center;
+
+      /* max 2 lines */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .ctaRow{
+      margin-top: 32px; /* <-- 32px breathing space */
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    /* Buttons */
+    .btn{
+      position:relative;
+      border:1px solid var(--border);
+      padding: 11px 16px;
+      font-weight:650;
+      background: rgba(255,255,255,0.72);
+      color: var(--ink);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 150px;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, filter .16s ease;
+      overflow:hidden;
+    }
+    .btn::after{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.55), rgba(255,255,255,0) 55%);
+      transform: translateX(-18%);
+      opacity: 0;
+      transition: opacity .16s ease, transform .16s ease;
+      pointer-events:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(203,213,225,0.95);
+      box-shadow: 0 14px 40px rgba(2,6,23,0.10);
+      filter: saturate(1.05);
+      text-decoration:none;
+    }
+    .btn:hover::after{ opacity: 1; transform: translateX(6%); }
+
+    .btn.teal{
+      border-color: rgba(15,118,110,0.55);
+      background: rgba(15,118,110,0.92);
+      color:#fff;
+      box-shadow: 0 14px 40px rgba(15,118,110,0.18);
+    }
+    .btn.teal:hover{
+      box-shadow: 0 18px 54px rgba(15,118,110,0.24);
+      border-color: rgba(15,118,110,0.75);
+    }
+    .btn.ghost{ background: rgba(255,255,255,0.42); }
+
+    /* Background */
+    .epoxy{
+      position:absolute;
+      inset:-90px;
+      z-index:1;
+      pointer-events:none;
+      filter:saturate(1.02);
+    }
+
+    .blob{
+      position:absolute;
+      border-radius: 999px;
+      filter: blur(52px);
+      opacity: 0.16; /* even more transparent */
+      transform: translate3d(0,0,0);
+      will-change: transform;
+    }
+
+    /* TRIPLE motion: increase multipliers massively */
+    .b1{
+      width: 600px; height: 600px;
+      left: -220px; top: -190px;
+      background: radial-gradient(circle at 30% 30%, rgba(15,118,110,0.95), rgba(15,118,110,0));
+      transform: translate(
+        calc((var(--mx) * 160px) + (var(--ix) * 75px)),
+        calc((var(--my) * 130px) + (var(--iy) * 75px))
+      );
+    }
+
+    .b2{
+      width: 600px; height: 600px;
+      right: -240px; top: 10px;
+      background: radial-gradient(circle at 40% 40%, rgba(251,113,133,0.95), rgba(251,113,133,0));
+      transform: translate(
+        calc((var(--mx) * -155px) + (var(--ix) * -75px)),
+        calc((var(--my) * 120px) + (var(--iy) * 75px))
+      );
+    }
+
+    .b3{
+      width: 780px; height: 780px;
+      left: 18%; bottom: -380px;
+      background: radial-gradient(circle at 50% 50%, rgba(245,158,11,0.95), rgba(245,158,11,0));
+      transform: translate(
+        calc((var(--mx) * 138px) + (var(--ix) * 75px)),
+        calc((var(--my) * -182px) + (var(--iy) * -80px))
+      );
+    }
+
+    .shine{
+      position:absolute;
+      inset:0;
+      opacity: 0.14;
+      background:
+        radial-gradient(900px 420px at 20% 10%, rgba(255,255,255,0.70), rgba(255,255,255,0) 60%),
+        radial-gradient(700px 380px at 80% 20%, rgba(255,255,255,0.50), rgba(255,255,255,0) 60%);
+      transform: translate(
+        calc((var(--mx) * 40px) + (var(--ix) * 20px)),
+        calc((var(--my) * 32px) + (var(--iy) * 20px))
+      );
+      filter: blur(1px);
+    }
+
+    .grain{
+      position:absolute;
+      inset:0;
+      opacity: 0.04;
+      background-image: radial-gradient(rgba(15,23,42,.65) 1px, transparent 1px);
+      background-size: 3px 3px;
+      mix-blend-mode: multiply;
+      transform: translate(
+        calc((var(--mx) * 10px) + (var(--ix) * 6px)),
+        calc((var(--my) * 10px) + (var(--iy) * 6px))
+      );
+    }
+
+    /* Bottom blend into next section */
+    .heroBlend{
+      position:absolute;
+      left:0; right:0; bottom:-1px;
+      height: 150px;
+      z-index: 3;
+      pointer-events:none;
+
+      /* blur + fade */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.60) 55%,
+        rgba(255,255,255,1) 100%
+      );
+    }
+
+    @media (max-width: 640px){
+      .heroContainer{ padding: 0 16px; }
+      .btn{ width: 100%; }
+      .ctaRow{ gap: 8px; }
+      .kicker{ margin-bottom: 18px; }
+      .lead{ margin-top: 24px; }
+      .ctaRow{ margin-top: 24px; }
+    }
+  </style>
+</section>

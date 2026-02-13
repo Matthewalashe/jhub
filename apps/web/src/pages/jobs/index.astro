@@ -1,276 +1,399 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { jobs } from "../../data/jobs";
+
+
+const featured = jobs.slice(0, 3);
 ---
 
-<BaseLayout title="Jobs — Jhub">
-  <section class="wrap">
-    <header class="top">
-      <div>
+<BaseLayout title="Jhub — Jobs in Nigeria">
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="heroText">
         <div class="kicker">Nigeria job feed</div>
-        <h1 class="title">Find jobs in Nigeria</h1>
-        <p class="subtitle">Search, filter, and apply faster with Apply Kit.</p>
+        <h1>Find jobs in Nigeria — fast, clean, and shareable.</h1>
+        <p class="lead">
+          Jhub helps you discover roles, share them to WhatsApp, and apply faster using Apply Kit.
+          No noise. Just opportunities.
+        </p>
+
+        <div class="ctaRow">
+          <a class="btn teal" href="/jobs">Browse jobs</a>
+          <a class="btn ghost" href="/tools/apply">Open Apply Kit</a>
+        </div>
+
+        <div class="miniMeta">
+          <span class="dot">•</span> <span>{jobs.length}+ roles</span>
+          <span class="dot">•</span> <span>Weekly updates</span>
+          <span class="dot">•</span> <span>WhatsApp-ready</span>
+        </div>
       </div>
 
-      <div class="topActions">
-        <a class="btn ghost" href="/tools">Tools</a>
-        <a class="btn teal" href="/tools/apply">Apply Kit</a>
-      </div>
-    </header>
+      <aside class="heroPanel" aria-label="Featured jobs">
+        <div class="panelTop">
+          <div class="panelTitle">Featured roles</div>
+          <a class="panelLink" href="/jobs">See all</a>
+        </div>
 
-    <section class="filters" aria-label="Filters">
-      <label class="field">
-        <span class="label">Search</span>
-        <input id="q" class="input" placeholder="Role, company, or location…" />
-      </label>
-
-      <label class="field">
-        <span class="label">Work mode</span>
-        <select id="workMode" class="select">
-          <option value="">All</option>
-          <option>Remote</option>
-          <option>Hybrid</option>
-          <option>On-site</option>
-        </select>
-      </label>
-
-      <label class="field">
-        <span class="label">Level</span>
-        <select id="level" class="select">
-          <option value="">All</option>
-          <option>Entry</option>
-          <option>Mid</option>
-          <option>Senior</option>
-        </select>
-      </label>
-
-      <label class="field">
-        <span class="label">Location</span>
-        <select id="location" class="select">
-          <option value="">All</option>
-          <option>Lagos</option>
-          <option>Abuja</option>
-          <option>Remote (Nigeria)</option>
-        </select>
-      </label>
-
-      <button id="clear" class="btn ghost" type="button">Clear</button>
+        <div class="panelList">
+          {featured.map((j) => (
+            <a class="miniCard" href={`/jobs/${j.slug}`}>
+              <div class="miniRow">
+                <div class="miniTitle">{j.title}</div>
+                <span class="tag">{j.workMode}</span>
+              </div>
+              <div class="miniSub">
+                {j.company} <span class="dot">•</span> {j.location}
+              </div>
+              <div class="miniPills">
+                <span class="pill">{j.level}</span>
+                <span class="pill">Deadline: {j.deadline}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </aside>
     </section>
 
-    <div class="meta">
-      <div><strong id="count"></strong> jobs</div>
-      <a class="metaLink" href="/news">News</a>
-      <a class="metaLink" href="/newsletter">Newsletter</a>
-    </div>
+    <!-- ABOUT -->
+    <section class="section" id="about">
+      <div class="sectionHead">
+        <h2>About Jhub</h2>
+        <p>
+          Jhub is a lightweight job board built for Nigeria. We keep listings clear and actionable,
+          so you can move from discovery → application with less stress.
+        </p>
+      </div>
 
-    <section id="grid" class="grid" aria-label="Job results"></section>
-  </section>
+      <div class="cols3">
+        <div class="infoCard">
+          <div class="infoTitle">Clean listings</div>
+          <p>No clutter, no distractions — just the details you need.</p>
+        </div>
+        <div class="infoCard">
+          <div class="infoTitle">Share to WhatsApp</div>
+          <p>Copy a ready message and post to your WhatsApp channel instantly.</p>
+        </div>
+        <div class="infoCard">
+          <div class="infoTitle">Apply Kit</div>
+          <p>Generate a cover letter + email draft faster when you’re ready to apply.</p>
+        </div>
+      </div>
+    </section>
 
-  <script type="module">
-    const jobs = ${JSON.stringify(jobs)};
-    const $ = (id) => document.getElementById(id);
+    <!-- HIRING PROCESS -->
+    <section class="section" id="hiring-process">
+      <div class="sectionHead">
+        <h2>Hiring process (what to expect)</h2>
+        <p>
+          Most roles follow a similar path. Use this to plan your time and keep your documents ready.
+        </p>
+      </div>
 
-    const q = $("q");
-    const workMode = $("workMode");
-    const level = $("level");
-    const location = $("location");
-    const clear = $("clear");
-    const grid = $("grid");
-    const count = $("count");
+      <div class="timeline">
+        <div class="step">
+          <div class="stepNo">1</div>
+          <div class="stepBody">
+            <div class="stepTitle">Find the right role</div>
+            <p>Pick roles that match your skills, level, and location.</p>
+          </div>
+        </div>
 
-    function norm(s){ return (s || "").toLowerCase().trim(); }
+        <div class="step">
+          <div class="stepNo">2</div>
+          <div class="stepBody">
+            <div class="stepTitle">Tailor your application</div>
+            <p>Use Apply Kit to craft a clear, relevant cover letter and email.</p>
+          </div>
+        </div>
 
-    function matches(job){
-      const query = norm(q.value);
-      const qok =
-        !query ||
-        norm(job.title).includes(query) ||
-        norm(job.company).includes(query) ||
-        norm(job.location).includes(query);
+        <div class="step">
+          <div class="stepNo">3</div>
+          <div class="stepBody">
+            <div class="stepTitle">Interviews & assessments</div>
+            <p>Expect a recruiter screen, task/assessment, then final interviews.</p>
+          </div>
+        </div>
 
-      const wok = !workMode.value || job.workMode === workMode.value;
-      const lok = !level.value || job.level === level.value;
+        <div class="step">
+          <div class="stepNo">4</div>
+          <div class="stepBody">
+            <div class="stepTitle">Offer & onboarding</div>
+            <p>Negotiate politely, confirm expectations, then onboard smoothly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      const locv = location.value;
-      const cLok = !locv || norm(job.location).includes(norm(locv));
+    <!-- HOW IT WORKS -->
+    <section class="section" id="how-it-works">
+      <div class="sectionHead">
+        <h2>How it works</h2>
+        <p>Post once on Jhub — share to WhatsApp — apply easily. That’s the loop.</p>
+      </div>
 
-      return qok && wok && lok && cLok;
-    }
+      <div class="howGrid">
+        <div class="howCard">
+          <div class="howTop">
+            <div class="howBadge">Step 1</div>
+            <div class="howTitle">Browse</div>
+          </div>
+          <p>Visit the Jobs page and filter by level, work mode, and location (coming next).</p>
+          <a class="inlineLink" href="/jobs">Go to jobs →</a>
+        </div>
 
-    function pill(text){
-      return `<span class="pill">${escapeHtml(text)}</span>`;
-    }
+        <div class="howCard">
+          <div class="howTop">
+            <div class="howBadge">Step 2</div>
+            <div class="howTitle">Share</div>
+          </div>
+          <p>Open any job, copy the WhatsApp text, and post to your WhatsApp channel.</p>
+          <a class="inlineLink" href="/jobs">Try on a job →</a>
+        </div>
 
-    function escapeHtml(s){
-      return (s || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
+        <div class="howCard">
+          <div class="howTop">
+            <div class="howBadge">Step 3</div>
+            <div class="howTitle">Apply</div>
+          </div>
+          <p>Use Apply Kit to generate your email + cover letter and apply quickly.</p>
+          <a class="inlineLink" href="/tools/apply">Open Apply Kit →</a>
+        </div>
+      </div>
+    </section>
 
-    function render(list){
-      count.textContent = String(list.length);
+    <!-- CASE STUDIES -->
+    <section class="section" id="case-studies">
+      <div class="sectionHead">
+        <h2>Case studies</h2>
+        <p>
+          Short examples of how people apply faster with structure. We’ll replace these with real stories as we grow.
+        </p>
+      </div>
 
-      grid.innerHTML = list.map((j) => {
-        const href = `/jobs/${j.slug}`;
-        const applyHref = `/tools/apply?job=${j.slug}`;
+      <div class="cases">
+        <article class="case">
+          <div class="caseTitle">Entry-level applicant</div>
+          <p>
+            Used Jhub to find roles with clear deadlines and applied to 10 roles in one week using a reusable cover letter structure.
+          </p>
+          <div class="caseMeta">Outcome: more replies, less stress.</div>
+        </article>
 
-        return `
-          <article class="card">
-            <div class="cardTop">
-              <div>
-                <a class="jobTitle" href="${href}">${escapeHtml(j.title)}</a>
-                <div class="jobSub">${escapeHtml(j.company)} <span class="dot">•</span> ${escapeHtml(j.location)}</div>
-              </div>
-              <div class="tag">${escapeHtml(j.workMode)}</div>
-            </div>
+        <article class="case">
+          <div class="caseTitle">Mid-level remote seeker</div>
+          <p>
+            Filtered to remote roles, used WhatsApp share text to track saved roles, then applied with tailored emails from Apply Kit.
+          </p>
+          <div class="caseMeta">Outcome: faster submissions.</div>
+        </article>
 
-            <div class="cardMid">
-              ${pill(j.level)}
-              ${pill("Deadline: " + j.deadline)}
-            </div>
-
-            <p class="cardText">${escapeHtml(j.summary)}</p>
-
-            <div class="cardActions">
-              <a class="btn ghost" href="${href}">Open</a>
-              <a class="btn teal" href="${applyHref}">Apply Kit</a>
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function run(){
-      render(jobs.filter(matches));
-    }
-
-    [q, workMode, level, location].forEach(el => el.addEventListener("input", run));
-    clear.addEventListener("click", () => {
-      q.value = "";
-      workMode.value = "";
-      level.value = "";
-      location.value = "";
-      run();
-    });
-
-    run();
-  </script>
+        <article class="case">
+          <div class="caseTitle">Career switch</div>
+          <p>
+            Focused on transferable skills, used the Hiring Process guide to prepare for assessments and interviews.
+          </p>
+          <div class="caseMeta">Outcome: better interview confidence.</div>
+        </article>
+      </div>
+    </section>
+  </div>
 
   <style>
-    .wrap{ max-width:1120px; margin:0 auto; padding:28px 28px 72px; }
-    .top{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding-bottom:18px; border-bottom:1px solid #e5e7eb; }
-    .kicker{ font-size:12px; font-weight:600; color:#0f766e; text-transform:uppercase; letter-spacing:.08em; }
-    .title{ margin:8px 0 0; font-size:38px; line-height:1.1; color:#0f172a; font-weight:650; letter-spacing:-0.02em; }
-    .subtitle{ margin:10px 0 0; color:#64748b; max-width:52ch; line-height:1.6; }
-    .topActions{ display:flex; gap:10px; flex-wrap:wrap; }
+    .wrap { max-width: 1240px; margin: 0 auto; }
 
-    .filters{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr auto;
-      gap:10px;
-      align-items:end;
-    }
-    .field{ display:flex; flex-direction:column; gap:6px; }
-    .label{ font-size:12px; font-weight:600; color:#64748b; }
-    .input,.select{
-      border:1px solid #e5e7eb;
-      padding:12px;
-      background:#fff;
-      color:#0f172a;
-      outline:none;
-    }
-    .input:focus,.select:focus{ border-color:#0f766e; }
-
-    .btn{
-      border:1px solid #e5e7eb;
-      padding:10px 12px;
-      font-weight:600;
-      background:#fff;
-      color:#0f172a;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-    }
-    .btn:hover{ border-color:#cbd5e1; text-decoration:none; }
-    .btn.teal{
-      border-color:#0f766e;
-      background:#0f766e;
-      color:#fff;
-    }
-    .btn.teal:hover{ filter:brightness(.97); }
-    .btn.ghost{ background:#fff; }
-
-    .meta{
-      margin-top:14px;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      color:#64748b;
-    }
-    .metaLink{ color:#0f766e; font-weight:600; }
-
-    .grid{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap:12px;
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr 0.9fr;
+      gap: 18px;
+      padding-top: 10px;
     }
 
-    .card{
-      border:1px solid #e5e7eb;
-      background:#fff;
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-height:220px;
+    .kicker {
+      font-size: 12px;
+      font-weight: 650;
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
-    .cardTop{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
-    .jobTitle{ font-size:16px; font-weight:650; color:#0f172a; text-decoration:none; }
-    .jobTitle:hover{ text-decoration:underline; text-decoration-color: rgba(15,118,110,.35); }
-    .jobSub{ margin-top:6px; color:#64748b; font-size:13px; line-height:1.5; }
-    .dot{ margin:0 6px; color:#cbd5e1; }
-
-    .tag{
-      border:1px solid rgba(15,118,110,.25);
-      background:#ccfbf1;
-      color:#064e46;
-      padding:6px 10px;
-      font-size:12px;
-      font-weight:650;
-      white-space:nowrap;
+    h1 {
+      margin: 10px 0 0;
+      font-size: 42px;
+      line-height: 1.08;
+      font-weight: 720;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 20ch;
     }
 
-    .cardMid{ display:flex; gap:8px; flex-wrap:wrap; }
-    .pill{
-      border:1px solid #e5e7eb;
-      padding:6px 10px;
-      font-size:12px;
-      font-weight:600;
-      color:#0f172a;
-      background:#fff;
+    .lead {
+      margin-top: 12px;
+      max-width: 65ch;
     }
 
-    .cardText{ margin:0; color:#64748b; font-size:13px; line-height:1.65; }
-    .cardActions{ display:flex; gap:10px; margin-top:auto; flex-wrap:wrap; }
+    .ctaRow { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
 
-    @media (max-width: 980px){
-      .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .filters{ grid-template-columns: 1fr 1fr; }
+    .miniMeta {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
     }
-    @media (max-width: 640px){
-      .wrap{ padding:22px 16px 64px; }
-      .top{ flex-direction:column; align-items:flex-start; }
-      .grid{ grid-template-columns: 1fr; }
-      .filters{ grid-template-columns: 1fr; }
+    .dot { color: #cbd5e1; }
+
+    .heroPanel {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 14px;
+      align-self: start;
+    }
+
+    .panelTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panelTitle { font-weight: 700; color: var(--ink); }
+    .panelLink { font-weight: 650; }
+
+    .panelList { display: grid; gap: 10px; margin-top: 12px; }
+
+    .miniCard {
+      border: 1px solid var(--border);
+      padding: 12px;
+      background: #fff;
+      text-decoration: none;
+      display: block;
+    }
+    .miniCard:hover { border-color: #cbd5e1; }
+
+    .miniRow { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+    .miniTitle { color: var(--ink); font-weight: 700; font-size: 14px; }
+    .miniSub { margin-top: 6px; color: var(--muted); font-size: 13px; }
+
+    .tag {
+      border: 1px solid rgba(15, 118, 110, 0.25);
+      background: var(--teal-soft);
+      color: var(--teal-ink);
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .miniPills { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    /* SHARED */
+    .section { margin-top: 42px; padding-top: 18px; border-top: 1px solid var(--border); }
+    .sectionHead { display: grid; gap: 10px; max-width: 80ch; }
+    h2 { margin: 0; font-size: 26px; font-weight: 700; color: var(--ink); }
+
+    .btn {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      font-weight: 650;
+      background: #fff;
+      color: var(--ink);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn:hover { border-color: #cbd5e1; text-decoration: none; }
+    .btn.teal { border-color: var(--teal); background: var(--teal); color: #fff; }
+    .btn.ghost { background: #fff; }
+
+    /* ABOUT */
+    .cols3 {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+    .infoCard {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 14px;
+    }
+    .infoTitle { font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+
+    /* TIMELINE */
+    .timeline { margin-top: 14px; display: grid; gap: 10px; }
+    .step {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .stepNo {
+      width: 38px; height: 38px;
+      border: 1px solid rgba(15,118,110,.25);
+      background: var(--teal-soft);
+      color: var(--teal-ink);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+    .stepTitle { font-weight: 700; color: var(--ink); }
+    .stepBody p { margin: 6px 0 0; }
+
+    /* HOW */
+    .howGrid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+    .howCard {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 14px;
+    }
+    .howTop { display: flex; gap: 10px; align-items: baseline; }
+    .howBadge { font-size: 12px; font-weight: 750; color: var(--teal); }
+    .howTitle { font-weight: 750; color: var(--ink); }
+    .inlineLink { font-weight: 650; }
+
+    /* CASES */
+    .cases {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+    .case {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 14px;
+    }
+    .caseTitle { font-weight: 750; color: var(--ink); }
+    .caseMeta { margin-top: 10px; font-size: 13px; color: var(--muted); font-weight: 600; }
+
+    /* RESPONSIVE */
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .cols3, .howGrid, .cases { grid-template-columns: 1fr; }
+      h1 { font-size: 38px; max-width: 28ch; }
     }
   </style>
 </BaseLayout>
