@@ -185,7 +185,7 @@ import { jobs } from "../../data/jobs";
 
   <script type="module">
     // Data shipped into the page at build time
-    const JOBS = ${JSON.stringify(jobs)};
+    const JOBS = JSON.parse(${JSON.stringify(JSON.stringify(jobs))});
 
     const KEY = "jhub_apply_profile_v1";
 

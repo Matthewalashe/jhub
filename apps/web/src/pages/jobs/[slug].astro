@@ -1,77 +1,23 @@
----
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { jobs } from "../../data/jobs";
+<script type="module">
+  const snippet = JSON.parse(${JSON.stringify(JSON.stringify(whatsappSnippet))});
+  const btn = document.getElementById("copyBtn");
 
-export function getStaticPaths() {
-  return jobs.map((job) => ({
-    params: { slug: job.slug },
-    props: { job },
-  }));
-}
-
-const { job } = Astro.props;
-
-const canonical = `https://jhub.ng/jobs/${job.slug}`;
-const whatsappSnippet = `${job.title} at ${job.company}
-
-📍 ${job.location} • ${job.workMode} • ${job.level}
-⏳ Deadline: ${job.deadline}
-
-${job.summary}
-
-Apply here:
-${canonical}
-
-#JhubJobs`;
----
-
-<BaseLayout title={`${job.title} — Jhub`}>
-  <a href="/jobs" style="font-weight:800;color:#14b8a6;">← Back to jobs</a>
-
-  <section style="margin-top:16px;border:1px solid #e2e8f0;padding:16px;">
-    <h1 style="margin:0;font-size:28px;">{job.title}</h1>
-
-    <div style="margin-top:6px;color:#64748b;">
-      {job.company} • {job.location}
-    </div>
-
-    <p style="margin-top:12px;color:#64748b;line-height:1.6;">
-      {job.summary}
-    </p>
-
-    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-      <span style="border:1px solid #e2e8f0;padding:6px 10px;">{job.workMode}</span>
-      <span style="border:1px solid #e2e8f0;padding:6px 10px;">{job.level}</span>
-      <span style="border:1px solid #e2e8f0;padding:6px 10px;">Deadline: {job.deadline}</span>
-    </div>
-
-    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
-      <a
-        href={`mailto:${job.applyEmail}?subject=${encodeURIComponent(`Application: ${job.title}`)}`}
-        style="border:1px solid #14b8a6;padding:10px 14px;font-weight:800;"
-      >
-        Open email
-      </a>
-
-      <a
-        href={`/tools/apply?job=${job.slug}`}
-        style="border:1px solid #fb7185;padding:10px 14px;font-weight:800;"
-      >
-        Apply tools
-      </a>
-
-      <button id="copyBtn" style="border:1px solid #fbbf24;padding:10px 14px;font-weight:800;">
-        Copy WhatsApp
-      </button>
-    </div>
-  </section>
-
-  <script type="module">
-    const snippet = ${JSON.stringify(whatsappSnippet)};
-    const btn = document.getElementById("copyBtn");
-    btn?.addEventListener("click", async () => {
+  btn?.addEventListener("click", async () => {
+    try {
       await navigator.clipboard.writeText(snippet);
       alert("WhatsApp text copied");
-    });
-  </script>
-</BaseLayout>
+    } catch (e) {
+      // fallback (older browsers)
+      const ta = document.createElement("textarea");
+      ta.value = snippet;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      alert("WhatsApp text copied");
+    }
+  });
+</script>
