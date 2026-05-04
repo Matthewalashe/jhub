@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════
+   JHUB — Bauhaus × Brutalist × Glassmorphism
+   Design System Variables
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+  /* Primary — deep forest green */
+  --color-primary: #1B4332;
+  --color-primary-light: #2D6A4F;
+  --color-primary-soft: #D8F3DC;
+
+  /* Accent — warm amber */
+  --color-accent: #F4A261;
+  --color-accent-dark: #E76F51;
+
+  /* Neutrals */
+  --color-surface: #FAFAF8;
+  --color-card: #FFFFFF;
+  --color-border: #E8E8E4;
+  --color-ink: #1A1A18;
+  --color-muted: #5C5C58;
+  --color-text-muted: #9A9A94;
+
+  /* Semantic */
+  --color-success: #52B788;
+  --color-warning: #F4A261;
+  --color-error: #E63946;
+
+  /* Brutalist accents */
+  --border-brutal: 2px solid #1A1A18;
+  --shadow-brutal: 4px 4px 0px #1A1A18;
+  --shadow-brutal-sm: 2px 2px 0px #1A1A18;
+
+  /* Glass */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-blur: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════
+   UTILITY CLASSES — Bauhaus × Brutalist × Glass
+   ═══════════════════════════════════════════════════════ */
+
+@layer components {
+  /* Glassmorphism panel */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-panel-light {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  /* Brutalist card */
+  .brutal-card {
+    border: 2px solid var(--color-ink);
+    box-shadow: var(--shadow-brutal);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .brutal-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #1A1A18;
+  }
+
+  /* Bauhaus geometric accent */
+  .bauhaus-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .bauhaus-line {
+    height: 3px;
+    background: var(--color-ink);
+  }
+
+  /* Brutalist button */
+  .btn-brutal {
+    @apply inline-flex items-center justify-center font-bold text-sm tracking-wide;
+    border: 2px solid var(--color-ink);
+    box-shadow: var(--shadow-brutal-sm);
+    padding: 12px 24px;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    cursor: pointer;
+  }
+
+  .btn-brutal:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px #1A1A18;
+  }
+
+  .btn-brutal:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px #1A1A18;
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0ed 25%, #e8e8e4 50%, #f0f0ed 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+/* Hide scrollbar for horizontal scroll areas */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PRINT STYLES — CV Template Isolation
+   ═══════════════════════════════════════════════════════ */
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  #cv-template,
+  #cv-template * {
+    visibility: visible !important;
+  }
+
+  #cv-template {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 210mm;
+    font-family: 'Georgia', serif;
+  }
+
+  @page {
+    size: A4;
+    margin: 20mm 15mm;
+  }
+
+  /* Hide all non-CV UI */
+  nav, footer, header, .no-print {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   FOCUS STYLES — Accessibility
+   ═══════════════════════════════════════════════════════ */
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.15);
+}
