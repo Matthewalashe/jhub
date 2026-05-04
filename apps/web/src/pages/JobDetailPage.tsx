@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, Briefcase, Share2, Download, Send, ArrowUpRight, DollarSign } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Share2, Download, Send, ArrowUpRight, DollarSign } from 'lucide-react';
 import { jobs } from '../data/jobs';
 import { useProfileStore } from '../store/profileStore';
 import { buildWhatsAppShareLink, openApplicationEmail } from '../lib/mailto';

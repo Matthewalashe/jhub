@@ -3,7 +3,7 @@
  * Generates structured cover letters from profile + job data
  */
 
-import type { UserProfile, JobListing } from '../types';
+import type { UserProfile } from '../types';
 
 export interface CoverLetterData {
   recipientName?: string;

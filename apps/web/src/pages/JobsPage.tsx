@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { jobs } from '../data/jobs';
 import JobCard from '../components/jobs/JobCard';
-import { SkeletonCard, EmptyState } from '../components/common';
+import { EmptyState } from '../components/common';
 import { cn } from '../lib/utils';
 
 const WORK_MODES = ['All', 'Remote', 'Onsite', 'Hybrid'] as const;
